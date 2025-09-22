@@ -14,7 +14,7 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 logging.basicConfig(level=logging.INFO)
 
 API_BASE_URL = "https://edusp-api.ip.tv"
-CLIENT_ORIGIN = "https://trollchipss-tarefas.vercel.app"
+CLIENT_ORIGIN = "https://servidorteste.vercel.app/"
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
 
 def default_headers(extra=None):
