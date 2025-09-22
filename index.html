@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>trollchipss-tarefas</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#02243a;
+      --card:#043b5a;
+      --card-2:#074a70;
+      --accent:#1ea8ff;
+      --muted:#9fcbe8;
+      --text:#e9f6ff;
+      --success:#48bb78;
+      --error:#ff6b6b;
+      --glass: rgba(255,255,255,0.03);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(30,168,255,0.06), transparent 12%),
+                  radial-gradient(1000px 500px at 90% 90%, rgba(0,80,160,0.06), transparent 12%),
+                  var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+
+    .card {
+      width:100%;
+      max-width:520px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius:16px;
+      padding:28px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.45);
+    }
+
+    .brand {
+      display:flex;
+      gap:14px;
+      align-items:center;
+      margin-bottom:18px;
+    }
+
+    .logo {
+      width:72px;
+      height:72px;
+      border-radius:14px;
+      background: linear-gradient(135deg, var(--card), var(--card-2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.45), 0 0 12px rgba(30,168,255,0.06);
+      border:1px solid rgba(255,255,255,0.03);
+    }
+
+    .logo i { font-size:34px; color:var(--accent); }
+
+    h1 {
+      font-size:20px;
+      margin:0;
+      color:var(--accent);
+      letter-spacing:0.6px;
+    }
+
+    p.lead { margin:4px 0 0; color:var(--muted); font-size:13px }
+
+    form { margin-top:18px; }
+
+    label { display:block; font-size:13px; margin-bottom:6px; color:var(--muted) }
+    input[type="text"], input[type="password"], input[type="number"]{
+      width:100%;
+      padding:12px 14px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.04);
+      background:var(--glass);
+      color:var(--text);
+      font-size:15px;
+      margin-bottom:14px;
+    }
+    .password-wrap{ position:relative }
+    .password-toggle {
+      position:absolute;
+      right:10px;
+      top:50%;
+      transform:translateY(-50%);
+      cursor:pointer;
+      color:var(--muted);
+    }
+
+    .buttons {
+      display:flex;
+      gap:12px;
+      margin-top:6px;
+    }
+
+    .btn {
+      flex:1;
+      padding:12px 14px;
+      border-radius:10px;
+      border:0;
+      font-weight:600;
+      cursor:pointer;
+      transition:all .18s ease;
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg,var(--accent), #2fb7ff);
+      color:#002533;
+      box-shadow: 0 8px 28px rgba(30,168,255,0.12);
+    }
+    .btn-secondary {
+      background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+      color:var(--muted);
+      border:1px solid rgba(255,255,255,0.03);
+    }
+
+    .footer {
+      margin-top:14px;
+      color:var(--muted);
+      font-size:13px;
+      text-align:center;
+    }
+
+    /* Notifications */
+    #notificationsContainer {
+      position: fixed;
+      top:18px;
+      right:18px;
+      width:320px;
+      z-index:9999;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .Notificacao {
+      background: rgba(6,20,30,0.75);
+      border-left:4px solid var(--accent);
+      padding:12px 14px;
+      border-radius:10px;
+      color:var(--text);
+      transform: translateX(24px);
+      opacity:0;
+      transition:all .28s ease;
+    }
+    .Notificacao.show { transform:translateX(0); opacity:1 }
+
+    /* task selection panel (embedded, not modal) */
+    .task-panel {
+      margin-top:18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+      border-radius:10px;
+      padding:12px;
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    .task-list { max-height:260px; overflow:auto; padding:6px; display:flex; flex-direction:column; gap:8px }
+    .task-item {
+      display:flex; align-items:center; gap:10px;
+      padding:10px; border-radius:8px; background:rgba(0,0,0,0.12);
+      border:1px solid rgba(255,255,255,0.02);
+    }
+    .task-item label { margin:0; font-size:14px; color:var(--text) }
+    .task-controls { display:flex; gap:10px; margin-top:10px }
+
+    @media (max-width:520px){
+      .card{padding:18px}
+      .logo{width:56px;height:56px}
+      .brand h1{font-size:18px}
+    }
+
+  </style>
+</head>
+<body>
+
+  <div id="notificationsContainer"></div>
+
+  <div class="card" role="main">
+    <div class="brand">
+      <div class="logo"><i class="fas fa-robot"></i></div>
+      <div>
+        <h1>trollchipss-tarefas</h1>
+        <p class="lead">Automatize tarefas — use com responsabilidade</p>
+      </div>
+    </div>
+
+    <form id="Enviar" autocomplete="off" onsubmit="return false;">
+      <div>
+        <label for="ra">RA</label>
+        <input id="ra" type="text" placeholder="Ex. 0001122187695SP" />
+      </div>
+
+      <div>
+        <label for="senha">Senha</label>
+        <div class="password-wrap">
+          <input id="senha" type="password" placeholder="Senha" />
+          <i id="togglePassword" class="password-toggle fas fa-eye"></i>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button id="pendingLessonsBtn" class="btn btn-primary" type="button">
+          <i class="fas fa-clock"></i> Lições Pendentes
+        </button>
+        <button id="expiredLessonsBtn" class="btn btn-secondary" type="button">
+          <i class="fas fa-exclamation-triangle"></i> Lições Expiradas
+        </button>
+      </div>
+
+      <!-- painel de tarefas (integrado em vez de modal) -->
+      <div class="task-panel" id="taskPanel" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <strong id="panelTitle">Lições</strong>
+          <div>
+            <input id="selectAllTasksCheckbox" type="checkbox" /> <label for="selectAllTasksCheckbox" style="color:var(--muted)">Selecionar todas</label>
+          </div>
+        </div>
+
+        <div class="task-list" id="taskListContainer"></div>
+
+        <div class="task-controls">
+          <button id="startSelectedTasksBtn" class="btn btn-primary" type="button"><i class="fas fa-play"></i> Processar selecionadas</button>
+          <button id="startAllTasksBtn" class="btn btn-secondary" type="button"><i class="fas fa-bolt"></i> Processar todas</button>
+        </div>
+
+        <div style="margin-top:10px;display:flex;gap:10px;">
+          <input id="modalMinTime" type="number" min="1" value="1" style="width:110px;padding:8px;border-radius:8px;" />
+          <input id="modalMaxTime" type="number" min="1" value="3" style="width:110px;padding:8px;border-radius:8px;" />
+          <span style="align-self:center;color:var(--muted);font-size:13px">Tempo (min)</span>
+        </div>
+      </div>
+
+      <div class="footer">Desenvolvido por <strong>trollchipss</strong></div>
+    </form>
+  </div>
+
+<script>
+/* ===== CONFIG ===== */
+const PYTHON_SERVER_URL = 'https://trollchipss-tarefas.onrender.com'; // Mude para sua URL do Render
+/* ================== */
+
+function showNotification(title, message, type='info', duration=3000){
+  const container = document.getElementById('notificationsContainer');
+  const div = document.createElement('div');
+  div.className = 'Notificacao';
+  div.innerHTML = `<strong>${title}</strong><div style="font-size:13px;margin-top:6px;color:var(--muted)">${message}</div>`;
+  container.appendChild(div);
+  setTimeout(()=>div.classList.add('show'),10);
+  if(type!=='processing') setTimeout(()=>{ div.classList.remove('show'); setTimeout(()=>div.remove(),280); }, duration);
+  return div;
+}
+
+async function callBackendEndpoint(endpoint, payload){
+  try{
+    const res = await fetch(`${PYTHON_SERVER_URL}/${endpoint}`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    if(!res.ok){
+      const text = await res.text();
+      throw new Error(`${res.status} ${text.substring(0,300)}`);
+    }
+    return await res.json();
+  }catch(err){
+    console.error('backend error', err);
+    return { success:false, message: err.message || String(err) };
+  }
+}
+
+/* UI bindings */
+const raInput = document.getElementById('ra');
+const senhaInput = document.getElementById('senha');
+const pendingLessonsBtn = document.getElementById('pendingLessonsBtn');
+const expiredLessonsBtn = document.getElementById('expiredLessonsBtn');
+const taskPanel = document.getElementById('taskPanel');
+const taskListContainer = document.getElementById('taskListContainer');
+const selectAllTasksCheckbox = document.getElementById('selectAllTasksCheckbox');
+const startSelectedTasksBtn = document.getElementById('startSelectedTasksBtn');
+const startAllTasksBtn = document.getElementById('startAllTasksBtn');
+
+let currentTasks = [];
+let currentFilter = 'pending';
+
+document.getElementById('togglePassword').addEventListener('click', ()=>{
+  const p = senhaInput;
+  p.type = p.type === 'password' ? 'text' : 'password';
+  document.getElementById('togglePassword').classList.toggle('fa-eye-slash');
+});
+
+/* Fetch tasks */
+async function loginAndFetchTasks(filter){
+  const ra = raInput.value.trim();
+  const senha = senhaInput.value.trim();
+  if(!ra || !senha){ showNotification('Atenção','Preencha RA e senha','error'); return; }
+
+  const notif = showNotification('Autenticação','Fazendo login...','processing');
+  const auth = await callBackendEndpoint('auth', { ra, password: senha });
+  notif.remove && notif.remove();
+
+  if(!auth.success){
+    showNotification('Erro', auth.message || 'Falha no login','error');
+    return;
+  }
+
+  showNotification('Sucesso','Login OK','success');
+
+  // buscar tarefas
+  showNotification('Busca','Buscando tarefas...','processing');
+  const tasksRes = await callBackendEndpoint('tasks', { auth_token: auth.auth_token, filter });
+  if(!tasksRes.success){
+    showNotification('Erro', tasksRes.message || 'Erro ao buscar tarefas','error');
+    return;
+  }
+  currentTasks = tasksRes.tasks || [];
+  taskPanel.style.display = 'block';
+  document.getElementById('panelTitle').textContent = filter === 'pending' ? 'Lições Pendentes' : 'Lições Expiradas';
+  renderTaskList();
+  showNotification('Pronto', `Encontradas ${currentTasks.length} tarefas`, 'success');
+}
+
+function renderTaskList(){
+  taskListContainer.innerHTML = '';
+  if(!currentTasks.length){ taskListContainer.innerHTML = '<div style="color:var(--muted);padding:12px">Nenhuma tarefa encontrada</div>'; return; }
+  currentTasks.forEach(t=>{
+    const el = document.createElement('div');
+    el.className = 'task-item';
+    el.innerHTML = `<input type="checkbox" value="${t.id}" id="task-${t.id}" />
+                    <label for="task-${t.id}">${escapeHtml(t.title)} <small style="color:var(--muted);margin-left:8px">[${t.answer_status||'none'}]</small></label>`;
+    taskListContainer.appendChild(el);
+  });
+}
+
+selectAllTasksCheckbox.addEventListener('change', ()=>{
+  const boxes = taskListContainer.querySelectorAll('input[type=checkbox]');
+  boxes.forEach(b => b.checked = selectAllTasksCheckbox.checked);
+});
+
+function getSelectedTasks(){
+  const boxes = taskListContainer.querySelectorAll('input[type=checkbox]:checked');
+  const ids = Array.from(boxes).map(b => b.value);
+  return currentTasks.filter(t => ids.includes(String(t.id)));
+}
+
+async function processSelectedTasks(isDraft=false){
+  const selected = getSelectedTasks();
+  if(selected.length===0){ showNotification('Atenção','Selecione ao menos uma tarefa','warning'); return; }
+  await processTasksFlow(selected, isDraft);
+}
+
+async function processAllTasks(isDraft=false){
+  if(currentTasks.length===0){ showNotification('Atenção','Nenhuma tarefa para processar','warning'); return; }
+  await processTasksFlow(currentTasks, isDraft);
+}
+
+async function processTasksFlow(tasks, isDraft=false){
+  const ra = raInput.value.trim();
+  const senha = senhaInput.value.trim();
+  if(!ra || !senha){ showNotification('Erro','RA e senha necessários','error'); return; }
+
+  // login to get token again
+  const auth = await callBackendEndpoint('auth', { ra, password: senha });
+  if(!auth.success){ showNotification('Erro','Falha ao reautenticar','error'); return; }
+
+  const timeMin = parseInt(document.getElementById('modalMinTime').value || '1');
+  const timeMax = parseInt(document.getElementById('modalMaxTime').value || '3');
+
+  showNotification('Processando','Enviando para o servidor...','processing');
+  const payload = {
+    auth_token: auth.auth_token,
+    tasks: tasks,
+    time_min: timeMin,
+    time_max: timeMax,
+    is_draft: isDraft
+  };
+
+  const result = await callBackendEndpoint('complete', payload);
+  if(!result.success){
+    showNotification('Erro', result.message || 'Falha no processamento', 'error');
+    return;
+  }
+
+  showNotification('Sucesso', result.message || 'Processamento concluído', 'success', 5000);
+  if(Array.isArray(result.results)){
+    result.results.forEach(r=>{
+      if(r.success) showNotification('Tarefa', `Tarefa ${r.task_id}: ${r.message || 'ok'}`, 'success', 4000);
+      else showNotification('Tarefa', `Tarefa ${r.task_id} erro: ${r.message}`, 'error', 6000);
+    });
+  }
+}
+
+/* Events */
+pendingLessonsBtn.addEventListener('click', ()=> loginAndFetchTasks('pending'));
+expiredLessonsBtn.addEventListener('click', ()=> loginAndFetchTasks('expired'));
+startSelectedTasksBtn.addEventListener('click', ()=> processSelectedTasks(false));
+startAllTasksBtn.addEventListener('click', ()=> processAllTasks(false));
+
+/* helpers */
+function escapeHtml(str){
+  if(!str) return '';
+  return str.replace(/[&<>"'`=\/]/g, function(s){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','/':'&#x2F;','`':'&#x60;','=':'&#x3D;'})[s]; });
+}
+
+</script>
+</body>
+    </html>
