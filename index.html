@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>trollchipss-tarefas</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#02243a; --card:#043b5a; --accent:#1ea8ff; --muted:#9fcbe8; --text:#e9f6ff;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,Segoe UI,Roboto}
+body{min-height:100vh;background:radial-gradient(circle at 10% 20%, rgba(30,168,255,0.06), transparent 12%),var(--bg);color:var(--text);display:flex;align-items:center;justify-content:center;padding:20px}
+.container{width:100%;max-width:540px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:26px;border:1px solid rgba(255,255,255,0.04);box-shadow:0 10px 30px rgba(0,0,0,0.45)}
+.header{display:flex;gap:14px;align-items:center;margin-bottom:14px}
+.logo{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--card),#074a70);display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--accent);box-shadow:0 8px 28px rgba(30,168,255,0.08)}
+.title{font-size:20px;color:var(--accent);font-weight:700}
+.lead{color:var(--muted);font-size:13px}
+.form{margin-top:8px;display:flex;flex-direction:column;gap:12px}
+label{font-size:13px;color:var(--muted)}
+input[type=text],input[type=password],input[type=number]{padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.02);color:var(--text)}
+.row{display:flex;gap:12px}
+.btn{padding:12px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
+.btn-primary{background:linear-gradient(90deg,var(--accent),#2fb7ff);color:#002533;flex:1}
+.btn-secondary{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);flex:1}
+.panel{margin-top:16px;background:rgba(255,255,255,0.02);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)}
+.task-list{max-height:260px;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:6px}
+.task-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;background:rgba(0,0,0,0.12)}
+.controls{display:flex;gap:8px;margin-top:12px}
+.small{font-size:13px;color:var(--muted)}
+#notifications{position:fixed;top:18px;right:18px;display:flex;flex-direction:column;gap:10px;z-index:999}
+.toast{background:rgba(6,20,30,0.9);padding:10px 12px;border-radius:8px;color:var(--text);box-shadow:0 8px 24px rgba(0,0,0,0.4);transform:translateX(20px);opacity:0;transition:all .28s}
+.toast.show{transform:translateX(0);opacity:1}
+@media (max-width:520px){.container{padding:18px}.logo{width:56px;height:56px}}
+</style>
+</head>
+<body>
+<div id="notifications"></div>
+<div class="container" role="main">
+  <div class="header">
+    <div class="logo"><i class="fas fa-robot"></i></div>
+    <div>
+      <div class="title">trollchipss-tarefas</div>
+      <div class="lead">Automação de tarefas — use com responsabilidade</div>
+    </div>
+  </div>
+
+  <form id="form" class="form" onsubmit="return false;">
+    <div>
+      <label for="ra">RA</label>
+      <input id="ra" type="text" placeholder="0001122187695SP" />
+    </div>
+    <div>
+      <label for="senha">Senha</label>
+      <input id="senha" type="password" placeholder="Senha" />
+    </div>
+
+    <div class="row">
+      <button id="pending" class="btn btn-primary" type="button"><i class="fas fa-clock"></i>&nbsp;Lições Pendentes</button>
+      <button id="expired" class="btn btn-secondary" type="button"><i class="fas fa-hourglass-end"></i>&nbsp;Expiradas</button>
+    </div>
+
+    <div class="panel" id="panel" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <strong id="panelTitle">Lições</strong>
+        <div><input id="selectAll" type="checkbox"/> <span class="small">Selecionar todas</span></div>
+      </div>
+      <div class="task-list" id="taskList"></div>
+
+      <div class="controls">
+        <button id="processSelected" class="btn btn-primary" type="button">Processar selecionadas</button>
+        <button id="processAll" class="btn btn-secondary" type="button">Processar todas</button>
+      </div>
+
+      <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+        <input id="minTime" type="number" value="1" min="0" style="width:80px" /> <span class="small">min</span>
+        <input id="maxTime" type="number" value="3" min="1" style="width:80px" /> <span class="small">min</span>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+/* ========== CONFIG ===========
+Change this to your Render URL after deploy, e.g. https://trollchipss-tarefas.onrender.com
+============================= */
+const PY_SERVER = 'https://trollchipss-tarefas.onrender.com'; 
+
+function toast(title, msg, ms=2500){
+  const root = document.getElementById('notifications');
+  const el = document.createElement('div');
+  el.className='toast';
+  el.innerHTML = `<strong>${title}</strong><div style="font-size:13px;color:#bcd">${msg}</div>`;
+  root.appendChild(el);
+  setTimeout(()=>el.classList.add('show'),10);
+  setTimeout(()=>{ el.classList.remove('show'); el.addEventListener('transitionend',()=>el.remove(),{once:true}) }, ms);
+}
+
+async function apiPost(path, payload){
+  try {
+    const res = await fetch(PY_SERVER + path, {
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)
+    });
+    const txt = await res.text();
+    try{ return JSON.parse(txt); } catch(e){ return { success:false, status:res.status, text:txt } }
+  } catch(e){
+    return { success:false, message:e.message };
+  }
+}
+
+/* UI wiring */
+document.getElementById('pending').addEventListener('click', ()=>loginAndFetch('pending'));
+document.getElementById('expired').addEventListener('click', ()=>loginAndFetch('expired'));
+document.getElementById('selectAll').addEventListener('change', (e)=>{ document.querySelectorAll('#taskList input[type=checkbox]').forEach(cb=>cb.checked=e.target.checked); });
+document.getElementById('processSelected').addEventListener('click', ()=>processSelected());
+document.getElementById('processAll').addEventListener('click', ()=>processAll());
+
+let currentTasks = [], currentToken = null, currentFilter='pending';
+
+async function loginAndFetch(filter){
+  const ra = document.getElementById('ra').value.trim();
+  const senha = document.getElementById('senha').value.trim();
+  if(!ra || !senha){ toast('Erro','Preencha RA e senha'); return; }
+  toast('Autenticação','Tentando login...',1200);
+  const login = await apiPost('/auth',{ ra, password: senha });
+  if(!login.success){ toast('Erro','Falha no login: '+(login.message||login.detail||login.text||'')); return; }
+  currentToken = login.auth_token || (login.user_info && login.user_info.auth_token);
+  toast('Sucesso','Login OK',900);
+
+  const tasksRes = await apiPost('/tasks',{ auth_token: currentToken, filter });
+  if(!tasksRes.success){ toast('Erro','Não foi possível buscar tarefas: '+(tasksRes.message||'')); return; }
+  currentTasks = tasksRes.tasks||[];
+  currentFilter = filter;
+  renderTasks();
+  toast('Pronto', `Encontradas ${currentTasks.length} tarefas`, 1500);
+}
+
+function renderTasks(){
+  const list = document.getElementById('taskList');
+  list.innerHTML='';
+  if(currentTasks.length===0){ list.innerHTML='<div style="color:#9fcbe8;padding:8px">Nenhuma tarefa</div>'; document.getElementById('panel').style.display='block'; return; }
+  currentTasks.forEach(t=>{
+    const div = document.createElement('div');
+    div.className='task-item';
+    div.innerHTML = `<input type="checkbox" value="${t.id}" id="t${t.id}"/><label for="t${t.id}">${escapeHtml(t.title||'sem título')}</label>`;
+    list.appendChild(div);
+  });
+  document.getElementById('panel').style.display='block';
+}
+
+function escapeHtml(s){ if(!s) return ''; return s.replace(/[&<>"'/]/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"/":'&#x2F;',"'":'&#39;'}[c])); }
+
+function getSelectedTasks(){ const ids = Array.from(document.querySelectorAll('#taskList input[type=checkbox]:checked')).map(i=>i.value); return currentTasks.filter(t=>ids.includes(String(t.id))); }
+
+async function processSelected(){ const selected = getSelectedTasks(); if(selected.length===0){ toast('Aviso','Selecione ao menos uma tarefa'); return; } await sendToComplete(selected); }
+async function processAll(){ if(currentTasks.length===0){ toast('Aviso','Nenhuma tarefa'); return; } await sendToComplete(currentTasks); }
+
+async function sendToComplete(tasks){
+  if(!currentToken){ toast('Erro','Sem token. Faça login'); return; }
+  const minTime = parseInt(document.getElementById('minTime').value)||1;
+  const maxTime = parseInt(document.getElementById('maxTime').value)||3;
+  toast('Processando','Enviando ao servidor...');
+  const res = await apiPost('/complete', { auth_token: currentToken, tasks, time_min: minTime, time_max: maxTime, is_draft:false });
+  if(!res.success){ toast('Erro','Processamento falhou: '+(res.message||res.text||'')); return; }
+  toast('Sucesso', res.message || 'Processamento concluído', 2500);
+  if(Array.isArray(res.results)){
+    res.results.forEach(r=>{
+      if(r.success) toast('Tarefa OK', `task ${r.task_id} processada`, 2200);
+      else toast('Erro', `task ${r.task_id} falhou: ${r.message}`, 4000);
+    });
+  }
+}
+</script>
+</body>
+</html>
