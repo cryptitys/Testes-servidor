@@ -1,0 +1,2568 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apoio - Eclipse Lunar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --eclipse-background-dark: #0A0A0A;
+            --eclipse-card: #1A2028;
+            --eclipse-lunar-purple: #8A2BE2;
+            --eclipse-silver: #e5e5e5;
+            --eclipse-text-primary: #e5e5e5;
+            --eclipse-text-secondary: #A0A0B0;
+            --eclipse-border: #3A4555;
+            --eclipse-glow-purple: rgba(138, 43, 226, 0.4);
+            --eclipse-shadow-lg: rgba(0, 0, 0, 0.7);
+            --font-heading: 'Orbitron', sans-serif;
+            --font-body: 'Poppins', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--eclipse-background-dark);
+            color: var(--eclipse-text-primary);
+            margin: 0;
+            padding: 20px;
+            background-image: radial-gradient(circle at 15% 70%, var(--eclipse-glow-purple) 0%, transparent 40%), radial-gradient(circle at 85% 30%, var(--eclipse-silver) 0%, transparent 40%);
+        }
+
+        #support-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        .support-modal-content {
+            background: var(--eclipse-card);
+            border: 2px solid var(--eclipse-lunar-purple);
+            border-radius: 24px;
+            padding: 30px 40px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow:
+                0 20px 60px var(--eclipse-shadow-lg),
+                0 0 40px var(--eclipse-glow-purple),
+                inset 0 1px 0 rgba(229, 229, 229, 0.1);
+            position: relative;
+            transform: scale(0.9);
+            animation: scaleIn 0.5s 0.2s forwards;
+            text-align: center;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            margin-top: 10px;
+        }
+
+        .modal-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--eclipse-lunar-purple);
+            box-shadow: 0 0 20px var(--eclipse-glow-purple);
+            animation: logoGlow 3s ease-in-out infinite alternate;
+        }
+
+        .modal-title {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--eclipse-lunar-purple) 0%, var(--eclipse-silver) 50%, var(--eclipse-lunar-purple) 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        .modal-body h2 {
+            font-family: var(--font-heading);
+            color: var(--eclipse-silver);
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px var(--eclipse-glow-purple);
+        }
+
+        .modal-body p {
+            color: var(--eclipse-text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        .modal-footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn-donate {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 35px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            font-family: var(--font-heading);
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--eclipse-lunar-purple) 0%, #6A1B9A 50%, #2A303A 100%);
+            color: var(--eclipse-silver);
+            box-shadow: 0 8px 25px var(--eclipse-glow-purple);
+            transform: translateY(0);
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            animation: pulseGlowPrimary 2s infinite alternate;
+        }
+
+        .btn-donate:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow:
+                0 15px 40px var(--eclipse-glow-purple),
+                0 0 30px var(--eclipse-lunar-purple);
+            border-color: var(--eclipse-silver);
+        }
+
+        .btn-donate::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(229, 229, 229, 0.2), transparent);
+            transition: left 0.6s ease-out;
+        }
+
+        .btn-donate:hover::before {
+            left: 100%;
+        }
+
+        .btn-donate i {
+            font-size: 1.2em;
+            animation: heartbeat 2s ease-in-out infinite;
+        }
+
+        .btn-close-new {
+            background-color: #2a2a2a;
+            color: var(--eclipse-text-secondary);
+            border: 1px solid var(--eclipse-border);
+            border-radius: 10px;
+            padding: 10px 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.3s, color 0.3s;
+            font-family: var(--font-body);
+        }
+
+        .btn-close-new:hover {
+            background-color: #3a3a3a;
+            color: var(--eclipse-text-primary);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes scaleOut {
+            from { transform: scale(1); opacity: 1; }
+            to { transform: scale(0.9); opacity: 0; }
+        }
+
+        @keyframes pulseGlowPrimary {
+            from { box-shadow: 0 8px 25px var(--eclipse-glow-purple); }
+            to { box-shadow: 0 12px 35px var(--eclipse-glow-purple); }
+        }
+
+        @keyframes logoGlow {
+            from { box-shadow: 0 0 20px var(--eclipse-glow-purple); }
+            to { box-shadow: 0 0 30px var(--eclipse-lunar-purple); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        @keyframes heartbeat {
+            0%, 50%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+        }
+
+        @media (max-width: 768px) {
+            .support-modal-content {
+                width: 95%;
+                padding: 25px 20px;
+                margin: 20px;
+                border-radius: 20px;
+            }
+
+            .modal-title {
+                font-size: 1.5rem;
+            }
+
+            .modal-body h2 {
+                font-size: 1.4rem;
+            }
+
+            .modal-body p {
+                font-size: 1rem;
+            }
+
+            .btn-donate {
+                padding: 16px 30px;
+                font-size: 1rem;
+            }
+
+            .modal-logo {
+                width: 45px;
+                height: 45px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .support-modal-content {
+                width: 98%;
+                padding: 20px 18px;
+                margin: 10px;
+            }
+
+            .modal-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .modal-title {
+                font-size: 1.3rem;
+            }
+
+            .btn-donate {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .btn-close-new {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="support-modal-overlay">
+        <div class="support-modal-content">
+            <div class="modal-header">
+                <img src="https://crimsonstrauss.xyz/img/logo/eclipse.jfif" alt="Logo Eclipse Lunar" class="modal-logo">
+                <span class="modal-title">Eclipse Lunar</span>
+            </div>
+
+            <div class="modal-body">
+                <h2>🌙 Bem-vindo(a)!</h2>
+                <p>
+                    Se você gosta das ferramentas e scripts que desenvolvemos,
+                    considere apoiar nosso trabalho. Sua contribuição nos ajuda a
+                    manter os projetos ativos e a criar novas soluções incríveis!
+                </p>
+            </div>
+
+            <div class="modal-footer">
+                <a href="https://pixgg.com/Crimsonstrauss" target="_blank" class="btn-donate">
+                    <i class="fas fa-hand-holding-heart"></i>
+                    <span>Apoiar com Doação</span>
+                </a>
+                <button id="new-close-btn" class="btn-close-new">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modalOverlay = document.getElementById('support-modal-overlay');
+            const modalContent = document.querySelector('.support-modal-content');
+            const newCloseBtn = document.getElementById('new-close-btn');
+
+            function closeModal() {
+                modalContent.style.animation = 'scaleOut 0.3s forwards';
+                modalOverlay.style.animation = 'fadeOut 0.3s 0.1s forwards';
+
+                setTimeout(() => {
+                    if (modalOverlay && modalOverlay.parentNode) {
+                        modalOverlay.remove();
+                    }
+                }, 400);
+            }
+
+            if (newCloseBtn) {
+                newCloseBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    closeModal();
+                });
+            }
+
+            modalOverlay.addEventListener('click', function(event) {
+                if (event.target === modalOverlay) {
+                    closeModal();
+                }
+            });
+
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eclipse Lunar - Automação de Tarefas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7541876262806139"
+     crossorigin="anonymous"></script>
+    <style>
+        :root {
+            --eclipse-background-dark: #0A0A0A;
+            --eclipse-background-light: #151A20;
+            --eclipse-card: #1A2028;
+            --eclipse-card-hover: #2A303A;
+            --eclipse-lunar-purple: #8A2BE2;
+            --eclipse-silver: #e5e5e5;
+            --eclipse-text-primary: #e5e5e5;
+            --eclipse-text-secondary: #A0A0B0;
+            --eclipse-border: #3A4555;
+            --eclipse-glow-purple: rgba(138, 43, 226, 0.4);
+            --eclipse-glow-silver: rgba(229, 229, 229, 0.2);
+            --eclipse-shadow-lg: rgba(0, 0, 0, 0.7);
+            --eclipse-success: #48bb78;
+            --eclipse-error: #f56565;
+            --eclipse-warning: #ed8936;
+            --font-heading: 'Orbitron', sans-serif;
+            --font-body: 'Poppins', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--eclipse-background-light);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--eclipse-lunar-purple);
+            border-radius: 10px;
+            border: 2px solid var(--eclipse-background-light);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--eclipse-lunar-purple);
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: linear-gradient(135deg, var(--eclipse-background-dark) 0%, var(--eclipse-background-light) 100%);
+            color: var(--eclipse-text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 20px 20px 20px;
+            position: relative;
+        }
+
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        body::before {
+            background-image: radial-gradient(circle at 15% 70%, var(--eclipse-glow-silver) 0%, transparent 60%), radial-gradient(circle at 85% 30%, var(--eclipse-glow-purple) 0%, transparent 60%);
+            opacity: 0.3;
+            animation: backgroundParallax 30s infinite alternate ease-in-out;
+        }
+
+        body::after {
+            background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="1" fill="%23e5e5e5" opacity="0.1"/></svg>');
+            background-size: 20px 20px;
+            opacity: 0.05;
+            animation: starField 100s linear infinite;
+        }
+
+        @keyframes backgroundParallax {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            100% {
+                transform: translate(-5%, 5%);
+            }
+        }
+
+        @keyframes starField {
+            0% {
+                background-position: 0 0;
+            }
+
+            100% {
+                background-position: 100px 100px;
+            }
+        }
+
+        .main-header {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(26, 32, 40, 0.8);
+            border-bottom: 1px solid var(--eclipse-border);
+            box-shadow: 0 2px 15px var(--eclipse-shadow-lg);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            backdrop-filter: blur(12px);
+            animation: slideDown 0.8s ease-out;
+            border-image: linear-gradient(90deg, var(--eclipse-lunar-purple), var(--eclipse-silver)) 1;
+            border-width: 0 0 2px 0;
+            border-style: solid;
+        }
+
+        .container {
+            max-width: 600px; /* MODIFICAÇÃO: Aumentado para o form ficar mais "gordinho" */
+            width: 100%;
+            margin: 100px auto 0 auto;
+            min-height: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+        }
+        /* Aumentar ainda mais o container principal apenas em telas de PC */
+        @media (min-width: 769px) {
+    .       container {
+                max-width: 750px; /* Aumentado de 600px para 750px apenas no PC */
+            }
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle at center, var(--eclipse-lunar-purple) 0%, var(--eclipse-card) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 25px var(--eclipse-glow-silver), 0 0 50px var(--eclipse-glow-purple);
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid var(--eclipse-silver);
+        }
+
+        .logo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 150%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(229, 229, 229, 0.2), transparent);
+            transition: left 0.8s ease-out;
+        }
+
+        .logo:hover::before {
+            left: 150%;
+        }
+
+        .logo:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 0 35px var(--eclipse-glow-silver), 0 0 70px var(--eclipse-glow-purple);
+        }
+
+        .takis-image {
+            width: 70%;
+            height: 70%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 5px rgba(229, 229, 229, 0.5));
+        }
+
+        .logo .fas.fa-moon {
+            font-size: 5rem;
+            color: var(--eclipse-silver);
+            text-shadow: 0 0 10px var(--eclipse-lunar-purple), 0 0 20px rgba(229, 229, 229, 0.5);
+        }
+
+        h1 {
+            font-family: var(--font-heading);
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--eclipse-lunar-purple) 0%, var(--eclipse-silver) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+            display: none; /* Mantido como display: none; conforme o código original */
+            text-shadow: 0 0 10px var(--eclipse-glow-purple);
+        }
+
+        .subtitle {
+            font-family: var(--font-body);
+            color: var(--eclipse-text-secondary);
+            font-size: 1.1rem;
+            font-weight: 400;
+            margin-top: 8px;
+            letter-spacing: 0.05em;
+            text-shadow: 0 0 5px rgba(138, 43, 226, 0.2);
+        }
+
+        .form-card {
+            background: rgba(26, 32, 40, 0.6);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 80px var(--eclipse-shadow-lg);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            backdrop-filter: blur(20px);
+            animation: slideUp 0.8s ease-out 0.2s both;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            transition: border-color 0.5s ease;
+        }
+
+        .form-card:hover {
+            border-color: var(--eclipse-lunar-purple);
+            box-shadow: 0 20px 80px var(--eclipse-shadow-lg), 0 0 30px var(--eclipse-glow-purple);
+        }
+
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--eclipse-lunar-purple), var(--eclipse-silver), transparent);
+            opacity: 0.7;
+            transition: opacity 0.5s ease;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .form-group:nth-child(1) {
+            animation-delay: 0.3s;
+        }
+
+        .form-group:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        .form-group:nth-child(3) {
+            animation-delay: 0.5s;
+        }
+
+        .form-group:nth-child(4) {
+            animation-delay: 0.6s;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--eclipse-text-primary);
+            font-size: 0.95rem;
+            letter-spacing: 0.02em;
+        }
+
+        .input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="number"] {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid var(--eclipse-border);
+            border-radius: 12px; /* Arredondado */
+            font-size: 16px;
+            background: var(--eclipse-background-dark);
+            color: var(--eclipse-text-primary);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: var(--font-body);
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--eclipse-lunar-purple);
+            box-shadow: 0 0 0 4px var(--eclipse-glow-purple), 0 0 15px var(--eclipse-glow-silver);
+            transform: translateY(-2px);
+        }
+
+        input:hover:not(:focus) {
+            border-color: var(--eclipse-border);
+            box-shadow: 0 0 0 2px rgba(138, 43, 226, 0.2);
+        }
+
+        .input-container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--eclipse-lunar-purple), var(--eclipse-silver));
+            transition: all 0.4s ease;
+            transform: translateX(-50%);
+        }
+
+        input:focus+.input-container::after {
+            width: 100%;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            cursor: pointer;
+            color: var(--eclipse-text-secondary);
+            transition: color 0.3s ease, transform 0.2s ease;
+            z-index: 10;
+        }
+
+        .password-toggle:hover {
+            color: var(--eclipse-lunar-purple);
+            transform: scale(1.1);
+        }
+
+        .time-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 32px;
+        }
+
+        button {
+            padding: 20px 28px;
+            border: none;
+            border-radius: 12px; /* Arredondado */
+            font-size: 1.15em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            font-family: var(--font-heading);
+            position: relative;
+            overflow: hidden;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            letter-spacing: 0.08em;
+            outline: none;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(229, 229, 229, 0.15), transparent);
+            transition: left 0.8s ease-out;
+            z-index: 1;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--eclipse-lunar-purple) 0%, var(--eclipse-card-hover) 100%);
+            color: var(--eclipse-silver);
+            box-shadow: 0 0 15px var(--eclipse-glow-purple), 0 0 30px var(--eclipse-glow-silver);
+            border: 2px solid transparent;
+            animation: pulseGlowPrimary 2s infinite alternate;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 0 25px var(--eclipse-glow-purple), 0 0 50px var(--eclipse-glow-silver), 0 5px 25px rgba(0, 0, 0, 0.5);
+            border-color: var(--eclipse-silver);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--eclipse-card) 0%, var(--eclipse-background-dark) 100%);
+            color: var(--eclipse-text-primary);
+            border: 2px solid var(--eclipse-border);
+            box-shadow: 0 0 15px rgba(42, 60, 95, 0.4);
+            animation: pulseGlowSecondary 2.5s infinite alternate;
+        }
+
+        .btn-secondary:hover {
+            background: var(--eclipse-lunar-purple);
+            border-color: var(--eclipse-silver);
+            color: var(--eclipse-silver);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 0 25px var(--eclipse-glow-purple), 0 0 50px var(--eclipse-glow-silver);
+        }
+
+        #pendingLessonsBtn,
+        #expiredLessonsBtn {
+            padding: 20px 28px;
+            font-size: 1.15em;
+            font-weight: 700;
+        }
+
+        @keyframes pulseGlowPrimary {
+            0% {
+                box-shadow: 0 0 15px var(--eclipse-glow-purple), 0 0 30px var(--eclipse-glow-silver);
+            }
+
+            100% {
+                box-shadow: 0 0 20px var(--eclipse-glow-purple), 0 0 40px var(--eclipse-glow-silver);
+            }
+        }
+
+        @keyframes pulseGlowSecondary {
+            0% {
+                box-shadow: 0 0 15px rgba(42, 60, 95, 0.4);
+            }
+
+            100% {
+                box-shadow: 0 0 20px rgba(42, 60, 95, 0.6);
+            }
+        }
+
+        .main-header .btn-back {
+            background: transparent;
+            color: var(--eclipse-silver);
+            border: none;
+            margin-top: 0;
+            padding: 10px 18px;
+            font-size: 1rem;
+            font-weight: 500;
+            box-shadow: none;
+            text-shadow: none;
+            letter-spacing: 0.05em;
+            font-family: var(--font-body);
+        }
+
+        .main-header .btn-back:hover {
+            background: rgba(138, 43, 226, 0.1);
+            border-color: var(--eclipse-lunar-purple);
+            transform: translateY(-2px);
+            box-shadow: 0 0 10px var(--eclipse-glow-purple);
+            color: var(--eclipse-lunar-purple);
+        }
+
+        button:active {
+            transform: translateY(1px);
+            box-shadow: none;
+        }
+
+        button:disabled {
+            background: var(--eclipse-background-light);
+            color: var(--eclipse-text-secondary);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            border-color: var(--eclipse-border);
+            opacity: 0.6;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(25px);
+            z-index: 1000;
+            animation: fadeIn 0.4s ease;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+    background: rgba(26, 32, 40, 0.7);
+    padding: 35px;
+    border-radius: 30px; /* Bordas bem arredondadas */
+    max-width: 700px;
+    width: 100%;
+    border: 2px solid var(--eclipse-lunar-purple); /* Borda simples ao invés de border-image */
+    /* border-image removido porque cancela o border-radius */
+    box-shadow: 0 20px 70px var(--eclipse-shadow-lg), 0 0 30px var(--eclipse-glow-silver);
+    animation: scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+
+        .modal-content-gradient-border {
+            background: rgba(26, 32, 40, 0.7);
+            padding: 35px;
+            border-radius: 30px;
+            max-width: 700px;
+            width: 100%;
+           order: none;
+            position: relative;
+            box-shadow: 0 20px 70px var(--eclipse-shadow-lg), 0 0 30px var(--eclipse-glow-silver);
+            animation: scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .modal-content-gradient-border::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 30px;
+            padding: 2px;
+            background: linear-gradient(45deg, var(--eclipse-lunar-purple), var(--eclipse-silver));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: exclude;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+
+        .modal h2 {
+            font-family: var(--font-heading);
+            color: var(--eclipse-lunar-purple);
+            margin-bottom: 28px;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            text-shadow: 0 0 10px var(--eclipse-glow-purple);
+        }
+
+        #scamWarning {
+            color: var(--eclipse-error);
+            background-color: rgba(245, 101, 101, 0.15);
+            border: 1px solid var(--eclipse-error);
+            padding: 12px 18px;
+            border-radius: 12px;
+            margin-top: 25px;
+            margin-bottom: 25px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(245, 101, 101, 0.4);
+            font-family: var(--font-body);
+        }
+
+        #scamWarning .fas {
+            color: var(--eclipse-error);
+            font-size: 1.2em;
+        }
+
+        .task-info {
+            margin-bottom: 24px;
+            padding: 20px;
+            background: rgba(21, 26, 32, 0.7);
+            border-radius: 12px;
+            border: 1px solid var(--eclipse-border);
+            box-shadow: inset 0 0 10px rgba(138, 43, 226, 0.1);
+        }
+
+        .task-info p {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1rem;
+            color: var(--eclipse-text-secondary);
+        }
+
+        .task-info strong {
+            color: var(--eclipse-text-primary);
+        }
+
+        .progress-container {
+            margin: 24px 0;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: var(--eclipse-background-dark);
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--eclipse-border);
+            box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--eclipse-lunar-purple), var(--eclipse-silver));
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 6px;
+            box-shadow: 0 0 10px var(--eclipse-glow-purple);
+        }
+
+        .time-remaining {
+            color: var(--eclipse-lunar-purple);
+            font-weight: 600;
+            text-shadow: 0 0 5px var(--eclipse-glow-purple);
+        }
+
+        .close-modal {
+            background: var(--eclipse-card-hover);
+            color: var(--eclipse-text-primary);
+            width: 100%;
+            margin-top: 25px;
+            border: 2px solid var(--eclipse-border);
+            font-family: var(--font-body);
+            letter-spacing: 0.05em;
+            border-radius: 12px; /* Arredondado */
+        }
+
+        .close-modal:hover {
+            background: var(--eclipse-error);
+            color: var(--eclipse-silver);
+            border-color: var(--eclipse-error);
+            box-shadow: 0 0 15px rgba(245, 101, 101, 0.5);
+        }
+
+        .task-list-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            max-height: 40vh;
+            /* MODIFICAÇÃO: Removido min-height para corrigir layout do PC */
+            margin-bottom: 20px;
+            padding-right: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--eclipse-lunar-purple) var(--eclipse-background-light);
+        }
+
+        .task-list-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .task-list-container::-webkit-scrollbar-track {
+            background: var(--eclipse-background-light);
+            border-radius: 10px;
+        }
+
+        .task-list-container::-webkit-scrollbar-thumb {
+            background: var(--eclipse-lunar-purple);
+            border-radius: 10px;
+            border: 2px solid var(--eclipse-background-light);
+        }
+
+        .task-list-container::-webkit-scrollbar-thumb:hover {
+            background: var(--eclipse-lunar-purple);
+        }
+
+        .task-list-item {
+            display: flex;
+            align-items: center;
+            background: var(--eclipse-background-light);
+            padding: 14px 18px;
+            border-radius: 12px; /* Arredondado */
+            margin-bottom: 12px;
+            border: 1px solid var(--eclipse-border);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        #selectAllCheckboxContainer {
+            padding: 10px 18px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--eclipse-border);
+        }
+
+        #selectAllCheckboxContainer label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--eclipse-text-secondary);
+        }
+
+        .task-list-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .task-list-item:hover {
+            background: var(--eclipse-card-hover);
+            border-color: var(--eclipse-lunar-purple);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 0 0 15px var(--eclipse-glow-purple);
+        }
+
+        .task-list-item input[type="checkbox"] {
+            margin-right: 15px;
+            width: 22px;
+            height: 22px;
+            accent-color: var(--eclipse-lunar-purple);
+            cursor: pointer;
+            border-radius: 6px; /* Arredondado */
+            min-width: 22px;
+            min-height: 22px;
+            border: 2px solid var(--eclipse-silver);
+            transition: all 0.2s ease;
+        }
+
+        .task-list-item input[type="checkbox"]:checked {
+            border-color: var(--eclipse-lunar-purple);
+            box-shadow: 0 0 10px var(--eclipse-glow-purple);
+        }
+
+        .task-list-item label {
+            flex-grow: 1;
+            font-size: 1.05rem;
+            color: var(--eclipse-text-primary);
+            margin-bottom: 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .task-list-item label span {
+            font-size: 0.85em;
+            margin-left: 10px;
+            font-weight: 400;
+            opacity: 0.7;
+            white-space: nowrap;
+        }
+
+        .task-list-item.redacao {
+            border-left: 5px solid var(--eclipse-warning);
+        }
+
+        .task-list-item.redacao label {
+            color: var(--eclipse-warning);
+            font-weight: 500;
+        }
+
+        .task-selection-modal .button-group {
+            margin-top: 0;
+            padding-top: 25px;
+            border-top: 1px solid var(--eclipse-border);
+            gap: 10px;
+        }
+
+        .task-selection-modal .button-group button {
+            padding: 12px 18px;
+            font-size: 0.9em;
+            letter-spacing: 0.05em;
+        }
+
+        .notifications-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 15px;
+            z-index: 1000;
+            pointer-events: none;
+            align-items: flex-end;
+        }
+
+        .floating-timers-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 350px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 1001;
+            pointer-events: none;
+            align-items: flex-end;
+        }
+
+        .Notificacao {
+            background: rgba(26, 32, 40, 0.7);
+            border-left: 4px solid var(--eclipse-lunar-purple);
+            padding: 18px 22px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px var(--eclipse-shadow-lg), 0 0 20px var(--eclipse-glow-silver);
+            animation: slideInRight 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(138, 43, 226, 0.2);
+            pointer-events: auto;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateX(30px);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        .notifications-container .Notificacao,
+        .floating-timers-container .Notificacao {
+            flex-shrink: 0;
+        }
+
+        .Notificacao.show {
+            opacity: 1;
+            transform: translateX(0);
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+        }
+
+        .Notificacao:hover {
+            transform: translateX(-8px);
+            box-shadow: 0 15px 50px var(--eclipse-shadow-lg), 0 0 30px var(--eclipse-glow-purple);
+            border-color: var(--eclipse-lunar-purple);
+        }
+
+        .Notificacao.fadeOut {
+            animation: fadeOutRight 0.1s ease forwards;
+        }
+
+        .Notificacao h3 {
+            font-size: 17px;
+            margin-bottom: 0;
+            color: var(--eclipse-lunar-purple);
+            font-weight: 600;
+            text-shadow: 0 0 5px rgba(138, 43, 226, 0.3);
+        }
+
+        .Notificacao p {
+            color: var(--eclipse-text-secondary);
+            font-size: 15px;
+            line-height: 1.4;
+            margin-bottom: 0;
+        }
+
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--eclipse-text-secondary);
+            opacity: 0.8;
+            animation: fadeInUp 0.6s ease-out 0.8s both;
+            letter-spacing: 0.03em;
+        }
+
+        .footer a {
+            color: var(--eclipse-lunar-purple);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: var(--eclipse-lunar-purple);
+            text-decoration: underline;
+            text-shadow: 0 0 8px var(--eclipse-glow-purple);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(60px) scale(0.9);
+            }
+        }
+
+        .loading {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(229, 229, 229, 0.1), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                left: -100%;
+            }
+
+            100% {
+                left: 100%;
+            }
+        }
+
+        .profile-menu-sidebar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: var(--eclipse-text-primary);
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+
+        .profile-menu-sidebar:hover {
+            color: var(--eclipse-lunar-purple);
+            transform: translateX(5px);
+        }
+
+        .sidebar-profile-image {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--eclipse-lunar-purple);
+        }
+
+        .profile-menu-sidebar i {
+            font-size: 2rem;
+            color: var(--eclipse-lunar-purple);
+        }
+
+        .Notificacao.processing-task {
+            border-left: 4px solid var(--eclipse-lunar-purple);
+            background: rgba(26, 32, 40, 0.8);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 0 15px var(--eclipse-glow-purple);
+        }
+
+        .Notificacao.processing-task .close-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: none;
+            border: none;
+            color: var(--eclipse-text-secondary);
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: color 0.2s ease, transform 0.2s ease;
+            padding: 5px;
+            border-radius: 50%;
+            line-height: 1;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: none;
+            overflow: hidden;
+        }
+
+        .Notificacao.processing-task .close-btn:hover {
+            color: var(--eclipse-error);
+            background-color: rgba(245, 101, 101, 0.1);
+            transform: scale(1.1);
+        }
+
+        .Notificacao.processing-task h3 {
+            color: var(--eclipse-lunar-purple);
+            font-size: 1.1em;
+            font-family: var(--font-heading);
+            text-shadow: 0 0 5px rgba(138, 43, 226, 0.3);
+        }
+
+        .Notificacao.processing-task p {
+            color: var(--eclipse-text-primary);
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        .Notificacao.processing-task .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85em;
+            color: var(--eclipse-text-secondary);
+        }
+
+        .Notificacao.processing-task .task-progress-percentage {
+            font-weight: 600;
+            color: var(--eclipse-text-primary);
+        }
+
+        .Notificacao.processing-task .time-remaining {
+            font-weight: 600;
+            color: var(--eclipse-lunar-purple);
+            text-shadow: 0 0 5px var(--eclipse-glow-purple);
+        }
+
+        .Notificacao.processing-task .progress-bar-inline {
+            width: 100%;
+            height: 8px;
+            background: var(--eclipse-background-dark);
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid var(--eclipse-border);
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .Notificacao.processing-task .progress-bar-inline .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--eclipse-lunar-purple), var(--eclipse-silver));
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 4px;
+            box-shadow: 0 0 8px var(--eclipse-glow-purple);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0 12px 12px 12px;
+            }
+
+            .container {
+                padding: 0;
+                min-height: auto;
+                margin-top: 80px;
+            }
+
+            .card-header {
+                margin-bottom: 20px;
+            }
+
+            .logo {
+                width: 100px;
+                height: 100px;
+            }
+
+            .logo .fas.fa-moon {
+                font-size: 4rem;
+            }
+
+            h1 {
+                font-size: 2.8rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .form-card {
+                padding: 24px;
+                border-radius: 20px;
+            }
+
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            input[type="text"],
+            input[type="password"],
+            input[type="number"] {
+                padding: 14px 16px;
+                font-size: 15px;
+            }
+
+            button {
+                padding: 18px 22px;
+                font-size: 1.05em;
+            }
+
+            #pendingLessonsBtn,
+            #expiredLessonsBtn {
+                padding: 18px 22px;
+                font-size: 1.05em;
+            }
+
+            .notifications-container {
+                width: 300px;
+                max-width: 90%;
+                right: 15px;
+                left: auto;
+                bottom: 15px;
+                top: auto;
+                max-height: 60vh;
+                align-items: flex-end;
+            }
+
+            .floating-timers-container {
+                width: calc(100% - 40px);
+                right: 20px;
+                left: 20px;
+                top: 15px;
+                max-height: 30vh;
+                align-items: center;
+            }
+
+            .Notificacao {
+                padding: 14px 18px;
+                border-radius: 12px;
+            }
+
+            .Notificacao h3 {
+                font-size: 14px;
+            }
+
+            .Notificacao p {
+                font-size: 12px;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 28px;
+            }
+
+            .modal h2 {
+                font-size: 1.6rem;
+            }
+
+            .main-header .btn-back {
+                font-size: 0.9rem;
+                padding: 8px 12px;
+            }
+
+            .task-selection-modal .modal-content {
+                padding: 20px;
+                overflow-y: visible;
+                max-height: 85vh;
+            }
+
+            @media (max-width: 768px) {
+            .task-selection-modal .task-list-container {
+                flex-grow: 0;
+                max-height: 280px; /* Mantém altura fixa no mobile também */
+                min-height: 280px; /* Mantém altura mínima no mobile */
+                overflow-y: visible;/* Mudado de 'visible' para 'auto' */
+                padding-right: 10px; /* Restaurado padding para scrollbar */
+            }
+
+
+            .task-selection-modal .task-list-container + .form-group {
+                margin-top: 24px;
+            }
+
+            .task-selection-modal .button-group {
+                gap: 8px;
+            }
+
+
+            .task-selection-modal .button-group button {
+                font-size: 0.9em;
+                padding: 14px 18px;
+            }
+
+            .task-list-item label {
+                font-size: 0.95rem;
+            }
+
+            .task-list-item input[type="checkbox"] {
+                width: 20px;
+                height: 20px;
+                min-width: 20px;
+                min-height: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0 8px 8px 8px;
+            }
+
+            .container {
+                padding: 0;
+                margin-top: 70px;
+            }
+
+            .card-header {
+                margin-bottom: 15px;
+            }
+
+            .logo {
+                width: 80px;
+                height: 80px;
+            }
+
+            .logo .fas.fa-moon {
+                font-size: 3.2rem;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .subtitle {
+                font-size: 0.9rem;
+            }
+
+            .form-card {
+                padding: 20px;
+            }
+
+            .form-group {
+                margin-bottom: 16px;
+            }
+
+            input[type="text"],
+            input[type="password"],
+            input[type="number"] {
+                padding: 12px 14px;
+            }
+
+            button {
+                padding: 14px 16px;
+                font-size: 1em;
+            }
+
+            #pendingLessonsBtn,
+            #expiredLessonsBtn {
+                padding: 14px 16px;
+                font-size: 1em;
+            }
+
+            .button-group {
+                gap: 10px;
+                margin-top: 24px;
+            }
+
+            .modal-content {
+                width: 98%;
+                padding: 24px;
+            }
+
+            .main-header .btn-back {
+                font-size: 0.85rem;
+                padding: 6px 10px;
+            }
+
+            .notifications-container,
+            .floating-timers-container {
+                width: calc(100% - 20px);
+                right: 10px;
+                left: 10px;
+                gap: 10px;
+            }
+
+            .Notificacao {
+                padding: 14px 18px;
+            }
+
+            .Notificacao h3 {
+                font-size: 14px;
+            }
+
+            .Notificacao p {
+                font-size: 12px;
+            }
+
+            .task-selection-modal .modal-content {
+                padding: 15px;
+            }
+
+            .task-selection-modal .button-group {
+                gap: 6px;
+            }
+
+
+            .task-selection-modal .button-group button {
+                font-size: 0.85em;
+                padding: 12px 15px;
+            }
+
+            .task-list-item label {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (hover: none) and (pointer: coarse) {
+
+            button:hover::before,
+            input:hover:not(:focus),
+            .logo:hover::before,
+            button:hover,
+            .logo:hover,
+            .Notificacao:hover {
+                animation: none;
+                transform: none;
+                box-shadow: none;
+                border-color: var(--eclipse-border);
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <header class="main-header">
+        <button type="button" id="backButton" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </button>
+        <script>
+            document.getElementById('backButton').addEventListener('click', function() {
+                window.location.href = 'https://crimsonstrauss.xyz/';
+            });
+        </script>
+    </header>
+
+    <div class="main-content-wrapper">
+        <div class="container">
+            <div class="form-card">
+                <div class="card-header">
+                    <div class="logo-container">
+                        <div class="logo">
+                            <i class="fas fa-moon"></i>
+                        </div>
+                        <h1 style="display: none;">TAKIS</h1>
+                        <p class="subtitle">☪✴ Tarefas Lunar</p>
+                    </div>
+                    <p id="scamWarning" class="text-error">
+                        <i class="fas fa-exclamation-triangle"></i> Se você pagou por isso, foi scamado.
+                    </p>
+                </div>
+
+                <form id="Enviar">
+                    <div class="form-group">
+                        <label for="ra">Registro Acadêmico (RA + dígito + estado)</label>
+                        <div class="input-container">
+                            <input type="text" id="ra" required placeholder="Ex. 1234567890sp">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="senha">Senha da sala do futuro</label>
+                        <div class="input-container">
+                            <input type="password" id="senha" required placeholder="Ex. Aluno_2025">
+                            <i class="password-toggle fas fa-eye" id="togglePassword"></i>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" id="pendingLessonsBtn" class="btn-primary">
+                            <i class="fas fa-hourglass-half"></i> Lições Pendentes
+                        </button>
+                        <button type="button" id="expiredLessonsBtn" class="btn-secondary">
+                            <i class="fas fa-calendar-times"></i> Lições Expiradas
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="footer">
+                Desenvolvido por <a target="_blank">crimsonstraus</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="progressModal" style="display: none;">
+        <div class="modal-content">
+            <h2><i class="fas fa-cogs"></i> Processando Atividades</h2>
+
+            <div class="task-info">
+                <p><strong>Tarefa:</strong> <span id="currentTask">Iniciando...</span></p>
+                <p><strong>Progresso:</strong> <span id="taskProgress">0</span>/<span id="totalTasks">0</span></p>
+                <p style="display: none;"><strong>Tempo Restante:</strong> <span id="timeRemaining"
+                        class="time-remaining">0s</span></p>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress" id="progressBar"></div>
+                </div>
+            </div>
+
+            <button class="close-modal" id="closeProgressModal"><i class="fas fa-times-circle"></i> Fechar</button>
+        </div>
+    </div>
+
+    <div class="modal task-selection-modal" id="taskSelectionModal">
+        <div class="modal-content">
+            <h2 id="taskSelectionModalTitle"><i class="fas fa-list-check"></i> Selecionar Tarefas</h2>
+            <div class="form-group">
+                <div class="task-list-item" id="selectAllCheckboxContainer">
+                    <input type="checkbox" id="selectAllTasksCheckbox">
+                    <label for="selectAllTasksCheckbox">Selecionar Todas as Tarefas</label>
+                </div>
+            </div>
+            <div class="task-list-container" id="taskListContainer"></div>
+            <div class="form-group">
+                <label>Tempo</label>
+                <div class="time-inputs">
+                    <div>
+                        <label for="modalMinTime">Mínimo (min)</label>
+                        <div class="input-container">
+                            <input type="text" id="modalMinTime" value="1" inputmode="numeric" pattern="[0-9]*">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="modalMaxTime">Máximo (min)</label>
+                        <div class="input-container">
+                            <input type="text" id="modalMaxTime" value="3" inputmode="numeric" pattern="[0-9]*">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="button-group">
+                <button type="button" id="startSelectedTasksBtn" class="btn-primary">
+                    <i class="fas fa-play-circle"></i> Fazer Tarefas Selecionadas
+                </button>
+                <button type="button" id="startAllTasksBtn" class="btn-secondary">
+                    <i class="fas fa-play"></i> Fazer Todas as Tarefas
+                </button>
+                <button type="button" id="startSelectedTasksDraftBtn" class="btn-secondary">
+                    <i class="fas fa-save"></i> Fazer Selecionadas como Rascunho
+                </button>
+                <button type="button" id="closeTaskSelectionModalBtn" class="close-modal">
+                    <i class="fas fa-times-circle"></i> Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="notifications-container" id="notificationsContainer"></div>
+
+    <div class="floating-timers-container" id="floatingTimersContainer"></div>
+
+
+    <script>
+
+        function showNotification(title, message, type = 'info', duration = 2500) {
+            const container = document.getElementById('notificationsContainer');
+            const notification = document.createElement('div');
+            notification.className = 'Notificacao';
+            let borderColor = 'var(--primary)';
+            if (type === 'success') borderColor = 'var(--eclipse-success)'; /* Usar variáveis CSS */
+            if (type === 'error') borderColor = 'var(--eclipse-error)';     /* Usar variáveis CSS */
+            if (type === 'warning') borderColor = 'var(--eclipse-warning)'; /* Usar variáveis CSS */
+            if (type !== 'processing') {
+                notification.style.borderLeftColor = borderColor;
+            }
+            notification.innerHTML = `
+                <h3>${title}</h3>
+                <p>${message}</p>
+            `;
+            container.appendChild(notification);
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+            if (type !== 'processing') {
+                notification.addEventListener('click', () => {
+                    removeNotification(notification);
+                });
+            }
+            if (type !== 'processing') {
+                setTimeout(() => {
+                    removeNotification(notification);
+                }, duration);
+            }
+            return notification;
+        }
+
+        function removeNotification(notification) {
+            if (notification && notification.parentNode) {
+                notification.classList.remove('show');
+                notification.classList.add('fadeOut');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 400);
+            }
+        }
+
+        const raInput = document.getElementById('ra');
+        const senhaInput = document.getElementById('senha');
+        const pendingLessonsBtn = document.getElementById('pendingLessonsBtn');
+        const expiredLessonsBtn = document.getElementById('expiredLessonsBtn');
+        const progressModal = document.getElementById('progressModal');
+        const currentTaskSpan = document.getElementById('currentTask');
+        const taskProgressSpan = document.getElementById('taskProgress');
+        const totalTasksSpan = document.getElementById('totalTasks');
+        const progressBar = document.getElementById('progressBar');
+        const closeProgressModalBtn = document.getElementById('closeProgressModal');
+        const taskSelectionModal = document.getElementById('taskSelectionModal');
+        const taskSelectionModalTitle = document.getElementById('taskSelectionModalTitle');
+        const taskListContainer = document.getElementById('taskListContainer');
+        const selectAllTasksCheckbox = document.getElementById('selectAllTasksCheckbox');
+        const startSelectedTasksBtn = document.getElementById('startSelectedTasksBtn');
+        const startAllTasksBtn = document.getElementById('startAllTasksBtn');
+        const startSelectedTasksDraftBtn = document.getElementById('startSelectedTasksDraftBtn');
+        const closeTaskSelectionModalBtn = document.getElementById('closeTaskSelectionModalBtn');
+        const notificationsContainer = document.getElementById('notificationsContainer');
+        const floatingTimersContainer = document.getElementById('floatingTimersContainer');
+        const modalMinTimeInput = document.getElementById('modalMinTime');
+        const modalMaxTimeInput = document.getElementById('modalMaxTime');
+        const timeRemainingSpan = document.getElementById('timeRemaining'); // Adicionado para evitar erro
+
+        const config = {
+            TEMPO_MIN: 1,
+            TEMPO_MAX: 3,
+            ENABLE_SUBMISSION: true,
+            API_BASE_URL: 'https://edusp.crimsonstrauss.xyz',
+            USER_AGENT: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36",
+            CATALYST_API_URL: 'https://catalyst.crimsonstrauss.xyz/complete'
+        };
+
+        let trava = false;
+        let currentFetchedTasks = [];
+        let currentTaskFilterType = '';
+        const taskIntervals = {};
+
+        let isTouch = false;
+        document.addEventListener('touchstart', () => {
+            isTouch = true;
+        });
+
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (event) => {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('focused');
+            });
+            input.addEventListener('touchstart', function() {
+                this.style.fontSize = '16px';
+            });
+        });
+
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('senha');
+        if (togglePassword && passwordInput) {
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+        }
+
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                if (!isTouch) {
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    ripple.style.cssText = `
+                        position: absolute;
+                        border-radius: 50%;
+                        background: rgba(255,255,255,0.2);
+                        transform: scale(0);
+                        animation: ripple 0.6s linear;
+                        pointer-events: none;
+                    `;
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    this.style.position = 'relative';
+                    this.style.overflow = 'hidden';
+                    this.appendChild(ripple);
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                }
+            });
+        });
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        function addSwipeSupport() {
+            let startX = 0;
+            let currentX = 0;
+            let isDragging = false;
+            document.addEventListener('touchstart', (e) => {
+                if (e.target.closest('.Notificacao')) {
+                    startX = e.touches[0].clientX;
+                    isDragging = true;
+                }
+            });
+            document.addEventListener('touchmove', (e) => {
+                if (isDragging && e.target.closest('.Notificacao')) {
+                    currentX = e.touches[0].clientX;
+                    const diff = currentX - startX;
+                    if (diff > 0) {
+                        e.target.closest('.Notificacao').style.transform = `translateX(${diff}px)`;
+                        e.target.closest('.Notificacao').style.opacity = Math.max(0.3, 1 - diff / 200);
+                    }
+                }
+            });
+            document.addEventListener('touchend', (e) => {
+                if (isDragging && e.target.closest('.Notificacao')) {
+                    const notification = e.target.closest('.Notificacao');
+                    const diff = currentX - startX;
+                    if (diff > 100) {
+                        removeNotification(notification);
+                    } else {
+                        notification.style.transform = '';
+                        notification.style.opacity = '';
+                    }
+                }
+                isDragging = false;
+            });
+        }
+        addSwipeSupport();
+
+        function Atividade(title, activity) {
+            const div = document.createElement("div");
+            div.className = "Notificacao";
+            const h3 = document.createElement("h3");
+            h3.textContent = title;
+            const p = document.createElement("p");
+            p.textContent = activity;
+            div.appendChild(h3);
+            div.appendChild(p);
+            notificationsContainer.appendChild(div);
+            setTimeout(() => {
+                div.classList.add('show');
+            }, 10);
+            setTimeout(() => {
+                div.classList.remove('show');
+                div.classList.add('fadeOut');
+                div.addEventListener("animationend", () => {
+                    div.remove();
+                }, {
+                    once: true
+                });
+            }, 5000);
+        }
+
+        function iniciarModalGlobal(totalTasks) {
+            progressModal.style.display = 'flex';
+            totalTasksSpan.textContent = totalTasks;
+            taskProgressSpan.textContent = 0;
+            progressBar.style.width = '0%';
+            currentTaskSpan.textContent = 'Iniciando...';
+            if (timeRemainingSpan) { // Verifica se o elemento existe antes de tentar acessá-lo
+                timeRemainingSpan.textContent = '0s';
+            }
+        }
+
+        function atualizarModalGlobal(taskTitle, secondsRemaining, currentIndex, totalTasks) {
+            currentTaskSpan.textContent = taskTitle;
+            taskProgressSpan.textContent = currentIndex;
+            totalTasksSpan.textContent = totalTasks;
+            if (timeRemainingSpan) { // Verifica se o elemento existe antes de tentar acessá-lo
+                timeRemainingSpan.textContent = `${secondsRemaining}s`;
+            }
+            const progressPercentage = (currentIndex / totalTasks) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+        }
+
+        document.getElementById('Enviar').addEventListener('submit', (e) => {
+            e.preventDefault();
+        });
+
+        pendingLessonsBtn.addEventListener('click', async () => {
+            if (trava) return;
+            trava = true;
+            currentTaskFilterType = 'pending';
+            try {
+                await loginAndFetchTasks(currentTaskFilterType, raInput.value, senhaInput.value);
+            } catch (error) {
+                showNotification('Erro', 'Ocorreu um erro ao processar as lições pendentes.', 'error');
+                trava = false;
+            } finally {
+                trava = false;
+            }
+        });
+
+        expiredLessonsBtn.addEventListener('click', async () => {
+            if (trava) return;
+            trava = true;
+            currentTaskFilterType = 'expired';
+            try {
+                await loginAndFetchTasks(currentTaskFilterType, raInput.value, senhaInput.value);
+            } catch (error) {
+                showNotification('Erro', 'Ocorreu um erro ao processar as lições expiradas.', 'error');
+                trava = false;
+            } finally {
+                trava = false;
+            }
+        });
+
+        closeProgressModalBtn.addEventListener('click', () => {
+            progressModal.style.display = 'none';
+        });
+
+        closeTaskSelectionModalBtn.addEventListener('click', () => {
+            taskSelectionModal.style.display = 'none';
+        });
+
+        selectAllTasksCheckbox.addEventListener('change', () => {
+            const checkboxes = Array.from(taskListContainer.querySelectorAll('input[type="checkbox"]:not(:disabled)'));
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAllTasksCheckbox.checked;
+            });
+        });
+
+        startSelectedTasksBtn.addEventListener('click', async () => {
+            const selectedTaskIds = Array.from(taskListContainer.querySelectorAll('input[type="checkbox"]:checked'))
+                .map(checkbox => checkbox.value);
+            if (selectedTaskIds.length === 0) {
+                showNotification('Atenção', 'Selecione pelo menos uma tarefa para iniciar.', 'warning');
+                return;
+            }
+            const tasksToProcess = currentFetchedTasks.filter(task => selectedTaskIds.includes(task.id.toString()));
+            taskSelectionModal.style.display = 'none';
+            await sendTasksToCatalyst(tasksToProcess, false);
+        });
+
+        startAllTasksBtn.addEventListener('click', async () => {
+            taskSelectionModal.style.display = 'none';
+            await sendTasksToCatalyst(currentFetchedTasks, false);
+        });
+
+        startSelectedTasksDraftBtn.addEventListener('click', async () => {
+            const selectedTaskIds = Array.from(taskListContainer.querySelectorAll('input[type="checkbox"]:checked'))
+                .map(checkbox => checkbox.value);
+            if (selectedTaskIds.length === 0) {
+                showNotification('Atenção', 'Selecione pelo menos uma tarefa para iniciar como rascunho.', 'warning');
+                return;
+            }
+            const tasksToProcess = currentFetchedTasks.filter(task => selectedTaskIds.includes(task.id.toString()));
+            taskSelectionModal.style.display = 'none';
+            await sendTasksToCatalyst(tasksToProcess, true);
+        });
+
+        async function loginAndFetchTasks(taskFilter, ra, senha) {
+            const loginData = {
+                realm: "edusp",
+                platform: "webclient",
+                id: ra,
+                password: senha
+            };
+            const headers = {
+                'Accept': 'application/json',
+                'x-api-realm': 'edusp',
+                'x-api-platform': 'webclient',
+                'User-Agent': config.USER_AGENT,
+                'Content-Type': 'application/json',
+                'Referer': 'https://crimsonstrauss.xyz/',
+                'Origin': 'https://crimsonstrauss.xyz',
+                'Sec-Fetch-Site': 'cross-site',
+                'Sec-Fetch-Mode': 'cors',
+                'Sec-Fetch-Dest': 'empty',
+                'Priority': 'u=0'
+            };
+
+            try {
+                Atividade('Autenticação', 'Logando...');
+                const data = await makeRequest(`${config.API_BASE_URL}/registration/edusp`, 'POST', headers, loginData);
+                await fetchUserRooms(data.auth_token, taskFilter, data.nick);
+            } catch (error) {
+                Atividade('Erro', 'Não foi possível logar! Verifique suas credenciais.');
+                throw error;
+            }
+        }
+
+        async function fetchUserRooms(token, taskFilter, userNick) {
+            try {
+                Atividade('Processamento', 'Buscando lições...');
+                const data = await makeRequest(
+                    `${config.API_BASE_URL}/room/user?list_all=true&with_cards=true`,
+                    'GET', { ...getDefaultHeaders(),
+                        'x-api-key': token
+                    }
+                );
+
+                if (data.rooms && data.rooms.length > 0) {
+                    let uniqueTargets = new Set();
+                    let roomIdToNameMap = new Map();
+                    let firstRoomName = data.rooms[0].name;
+
+                    data.rooms.forEach(room => {
+                        uniqueTargets.add(room.name);
+                        roomIdToNameMap.set(room.id.toString(), room.name);
+
+                        if (userNick) {
+                            uniqueTargets.add(`${room.name}:${userNick}`);
+                        }
+                    });
+
+                    const roomUserJsonString = JSON.stringify(data);
+                    const idMatches = roomUserJsonString.match(/"id"\s*:\s*(\d+)(?!\d)/g) || [];
+                    idMatches.forEach(m => {
+                        const id = m.match(/\d+/)[0];
+                        if (id && !roomIdToNameMap.has(id) && !uniqueTargets.has(id)) {
+                            uniqueTargets.add(id);
+                        }
+                    });
+
+                    const targetsArray = Array.from(uniqueTargets);
+
+                    let allFetchedTasks = await fetchTasks(token, targetsArray, taskFilter);
+
+                    allFetchedTasks.forEach(task => {
+                        if (isSpecialTaskByTitle(task) && task.answer_status === null) {
+                            task.answer_status = 'pending';
+                        }
+                    });
+
+
+                    if (allFetchedTasks.length > 0) {
+                        currentFetchedTasks = allFetchedTasks.map(task => {
+                            let effectiveRoomForExecution = null;
+
+                            if (task.room_info && task.room_info.name) {
+                                effectiveRoomForExecution = task.room_info.name;
+                            } else {
+                                const pubTarget = task.publication_target;
+                                if (roomIdToNameMap.has(pubTarget)) {
+                                    effectiveRoomForExecution = roomIdToNameMap.get(pubTarget);
+                                } else if (typeof pubTarget === 'string' && pubTarget.includes(':')) {
+                                    effectiveRoomForExecution = pubTarget.split(':')[0];
+                                } else if (typeof pubTarget === 'string' && pubTarget.startsWith('r')) {
+                                    effectiveRoomForExecution = pubTarget;
+                                }
+                            }
+
+                            if (!effectiveRoomForExecution || !effectiveRoomForExecution.startsWith('r')) {
+                                effectiveRoomForExecution = firstRoomName;
+                            }
+
+                            return { ...task,
+                                token,
+                                room: effectiveRoomForExecution,
+                                type: taskFilter
+                            };
+                        });
+                        displayTasksInSelectionModal(currentFetchedTasks, taskFilter);
+                        Atividade('Processamento', `Identificadas ${currentFetchedTasks.length} lições para seleção.`);
+                    } else {
+                        Atividade('Info', 'Nenhuma lição encontrada para o filtro selecionado.');
+                        showNotification('Nenhuma Tarefa', 'Não foram encontradas lições para o filtro selecionado.', 'info');
+                    }
+
+                } else {
+                    Atividade('Info', 'Nenhuma sala encontrada.');
+                    showNotification('Nenhuma Sala', 'Nenhuma sala encontrada para o usuário.', 'info');
+                }
+            } catch (error) {
+                Atividade('Erro', 'Erro ao buscar salas do usuário.');
+                showNotification('Erro', 'Erro ao buscar salas do usuário.', 'error');
+                throw error;
+            } finally {
+                trava = false;
+            }
+        }
+
+        async function fetchTasks(token, targetPublications, taskFilter = 'all') {
+            const params = {
+                limit: 100,
+                offset: 0,
+                is_exam: false,
+                with_answer: true,
+                is_essay: false,
+                with_apply_moment: true
+            };
+
+            if (taskFilter === 'expired') {
+                params.expired_only = true;
+                params.filter_expired = false;
+            } else {
+                params.expired_only = false;
+                params.filter_expired = true;
+            }
+
+            const statusParams =
+                `answer_statuses=${encodeURIComponent('pending')}&answer_statuses=${encodeURIComponent('draft')}`;
+
+            const targetParams = targetPublications.map(target => {
+                return `publication_target=${encodeURIComponent(target)}`;
+            }).join('&');
+
+            const url =
+                `${config.API_BASE_URL}/tms/task/todo?${Object.entries(params).map(([key, value]) => `${key}=${value}`).join('&')}&${targetParams}&${statusParams}`;
+
+            const headers = { ...getDefaultHeaders(),
+                'x-api-key': token
+            };
+            try {
+                const data = await makeRequest(url, 'GET', headers);
+
+                let filteredData = data;
+                if (taskFilter === 'expired') {
+                    filteredData = filteredData.filter(task => !isRedacao(task));
+                }
+
+                tasksFound = filteredData.map(task => ({ ...task,
+                    token,
+                    room: task.publication_target,
+                    type: taskFilter
+                }));
+
+                return tasksFound;
+
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function displayTasksInSelectionModal(tasks, filterType) {
+            taskListContainer.innerHTML = '';
+            selectAllTasksCheckbox.checked = false;
+
+            if (tasks.length === 0) {
+                taskListContainer.innerHTML =
+                    '<p style="text-align: center; color: var(--eclipse-text-secondary); padding: 20px;">Nenhuma tarefa encontrada para este filtro.</p>';
+                startSelectedTasksBtn.disabled = true;
+                startAllTasksBtn.disabled = true;
+                selectAllTasksCheckbox.disabled = true;
+                startSelectedTasksDraftBtn.disabled = true;
+            } else {
+                tasks.forEach(task => {
+                    const listItem = document.createElement('div');
+                    listItem.className = `task-list-item ${isRedacao(task) ? 'redacao' : ''}`;
+                    const isChecked = false;
+                    const isDisabled = isRedacao(task) && filterType === 'expired';
+
+                    let statusText = '';
+                    if (filterType === 'pending') {
+                        statusText = task.answer_status === 'draft' ? '(Rascunho)' : '(Pendente)';
+                    }
+
+                    listItem.innerHTML = `
+                        <input type="checkbox" id="task-${task.id}" value="${task.id}" ${isDisabled ? 'disabled' : ''} ${isChecked ? 'checked' : ''}>
+                        <label for="task-${task.id}">
+                            ${task.title}
+                            ${filterType === 'pending' ? `<span style="color: var(--eclipse-text-secondary); font-size: 0.85em; margin-left: 5px;">${statusText}</span>` : ''}
+                            ${isDisabled ? '<span style="color: var(--eclipse-warning); font-size: 0.85em; margin-left: 5px;">(Redação - Ignorada)</span>' : ''}
+                        </label>
+                    `;
+                    taskListContainer.appendChild(listItem);
+
+                    listItem.addEventListener('click', (e) => {
+                        const checkbox = listItem.querySelector('input[type="checkbox"]');
+                        if (e.target !== checkbox && !checkbox.disabled) {
+                            checkbox.checked = !checkbox.checked;
+                            const allChecked = Array.from(taskListContainer.querySelectorAll('input[type="checkbox"]:not(:disabled)')).every(cb => cb.checked);
+                            selectAllTasksCheckbox.checked = allChecked;
+                        }
+                    });
+                });
+                startSelectedTasksBtn.disabled = false;
+                startAllTasksBtn.disabled = false;
+                selectAllTasksCheckbox.disabled = false;
+                startSelectedTasksDraftBtn.disabled = false;
+            }
+
+            taskSelectionModalTitle.textContent = filterType === 'pending' ? 'Lições Pendentes' : 'Lições Expiradas';
+            taskSelectionModal.style.display = 'flex';
+        }
+
+        function getDefaultHeaders() {
+            return {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'x-api-realm': 'edusp',
+                'x-api-platform': 'webclient',
+                'User-Agent': config.USER_AGENT,
+                'Connection': 'keep-alive',
+                'Sec-Fetch-Site': 'same-origin',
+                'Sec-Fetch-Mode': 'cors',
+                'Sec-Fetch-Dest': 'empty'
+            };
+        }
+
+        async function makeRequest(url, method = 'GET', headers = {}, body = null) {
+            const options = {
+                method,
+                headers: {
+                    'User-Agent': config.USER_AGENT,
+                    'Content-Type': 'application/json',
+                    ...headers
+                }
+            };
+            if (body) {
+                options.body = JSON.stringify(body);
+            }
+
+            const response = await fetch(url, options);
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`❌ HTTP ${method} ${url} => ${response.status}, Resposta: ${errorText}`);
+            }
+            return response.json();
+        }
+
+        function isRedacao(task) {
+            return task.tags.some(t => t.toLowerCase().includes('redacao')) ||
+                task.title.toLowerCase().includes('redação');
+        }
+
+        function isSpecialTaskByTitle(task) {
+            return task.title.toLowerCase().includes('multidisciplinar:') || task.title.toLowerCase().includes(
+                'especial:');
+        }
+
+        async function sendTasksToCatalyst(tasks, isDraft) {
+            if (!tasks || tasks.length === 0) {
+                showNotification('Atenção', 'Nenhuma lição selecionada/disponível para enviar.', 'info');
+                return;
+            }
+
+            const tasksToProcess = tasks.filter(task => !(currentTaskFilterType === 'expired' && isRedacao(task)));
+
+            if (tasksToProcess.length === 0) {
+                showNotification('Atenção', 'Nenhuma lição válida para enviar (redações expiradas foram ignoradas).', 'info');
+                return;
+            }
+
+            const auth_token = tasksToProcess[0]?.token;
+            const room_name_for_apply = tasksToProcess[0]?.room;
+            const time_min = parseInt(modalMinTimeInput.value) || 1;
+            const time_max = parseInt(modalMaxTimeInput.value) || 3;
+
+            const payload = {
+                tasks: tasksToProcess.map(task => ({
+                    task_id: task.id,
+                    title: task.title,
+                    answer_id: task.answer_id,
+                    tags: task.tags,
+                    answer_status: task.answer_status,
+                    publication_target: task.publication_target
+                })),
+                auth_token: auth_token,
+                room_name_for_apply: room_name_for_apply,
+                time_min: time_min,
+                time_max: time_max,
+                is_draft: isDraft
+            };
+
+            try {
+                Atividade('Enviando', `Enviando ${tasksToProcess.length} tarefas para processamento...`);
+                const response = await fetch(config.CATALYST_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || `Erro HTTP: ${response.status}`);
+                }
+
+                const result = await response.json();
+                showNotification('Sucesso', result.message, 'success');
+            } catch (error) {
+                showNotification('Erro', `Falha ao enviar tarefas: ${error.message}`, 'error');
+            }
+        }
+
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function log(str) {
+            console.log("===================================");
+            console.log(`★ ✦ Eclipse Lunar ${str} ✦ ★`);
+            console.log("===================================");
+        }
+    </script>
+</body>
+
+</html>
